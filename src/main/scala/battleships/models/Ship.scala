@@ -7,10 +7,9 @@ import battleships.utils._
   */
 case class Ship(cells: Map[(Int, Int), Boolean]) {
 
-  def hit(cell: (Int, Int)): Ship = copy(cells.updated(cell, false))
+  val isSunk: Boolean = cells.forall(!_._2)
 
-  def isSunk: Boolean = cells.forall(!_._2)
-
+  def hit(cell: (Int, Int)): Ship = this.copy(cells.updated(cell, false))
 }
 
 object Ship {
@@ -19,7 +18,7 @@ object Ship {
     dir match {
       case Left | Up => fromCoordinates(dir.translate(start, length - 1), dir.opposite, length)
       case Right | Down =>
-        val coords = (0 until length) map (i => dir.translate(start, i + 10) -> true)
+        val coords = (0 until length) map (i => dir.translate(start, i) -> true)
         Ship(coords.toMap)
     }
   }
