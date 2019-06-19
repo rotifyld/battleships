@@ -15,12 +15,17 @@ case class Ship(cells: Map[(Int, Int), Boolean]) {
 object Ship {
 
   def fromCoordinates(start: (Int, Int), dir: Direction, length: Int): Ship = {
-    dir match {
-      case Left | Up => fromCoordinates(dir.translate(start, length - 1), dir.opposite, length)
+    require(length > 0)
+    if (!Utils.inRange(start) || !Utils.inRange(dir.translate(start, length))) throw new IndexOutOfBoundsException
+
+    def fromCoordinatesRec(startCell: (Int, Int), dir: Direction): Ship = dir match {
+      case Left | Up => fromCoordinates(dir.translate(startCell, length - 1), dir.opposite, length)
       case Right | Down =>
-        val coords = (0 until length) map (i => dir.translate(start, i) -> true)
-        Ship(coords.toMap)
+        val shipCells = (0 until length) map (i => dir.translate(startCell, i) -> true)
+        Ship(shipCells.toMap)
     }
+
+    fromCoordinatesRec(start, dir)
   }
 
   def empty: Ship = Ship(Map())
