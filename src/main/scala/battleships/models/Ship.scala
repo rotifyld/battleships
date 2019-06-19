@@ -1,33 +1,38 @@
 package battleships.models
 
+import battleships.utils.Utils.Rectangle
 import battleships.utils._
 
 /**
   * @param cells cell -> is alive (not sunk)
   */
-case class Ship(cells: Map[(Int, Int), Boolean]) {
+case class Ship(cells: Map[(Int, Int), Boolean], influenceRange: Rectangle) {
 
   val isSunk: Boolean = cells.forall(!_._2)
 
-  def hit(cell: (Int, Int)): Ship = this.copy(cells.updated(cell, false))
+  def hit(cell: (Int, Int)): Ship = this.copy(cells = cells.updated(cell, false))
+
+  def collides(other: Ship): Boolean = this.influenceRange.overlaps(other.influenceRange)
+
+  override def toString: String = influenceRange.toString
+
 }
 
 object Ship {
 
   def fromCoordinates(start: (Int, Int), dir: Direction, length: Int): Ship = {
     require(length > 0)
-    if (!Utils.inRange(start) || !Utils.inRange(dir.translate(start, length))) throw new IndexOutOfBoundsException
+    val end = dir.translate(start, length - 1)
 
-    def fromCoordinatesRec(startCell: (Int, Int), dir: Direction): Ship = dir match {
-      case Left | Up => fromCoordinates(dir.translate(startCell, length - 1), dir.opposite, length)
-      case Right | Down =>
-        val shipCells = (0 until length) map (i => dir.translate(startCell, i) -> true)
-        Ship(shipCells.toMap)
-    }
+    if (!Utils.inRange(start) || !Utils.inRange(end))
+      throw new IndexOutOfBoundsException("start: " + start + " dir: " + dir + " length " + length)
 
-    fromCoordinatesRec(start, dir)
+    val shipCells = (0 until length) map (i => dir.translate(start, i) -> true)
+    Ship(shipCells.toMap, Rectangle.extended(start, end))
   }
 
-  def empty: Ship = Ship(Map())
+  def single(cell: (Int, Int)): Ship = {
+    Ship(Map(cell -> true), Rectangle.extended(cell, cell))
+  }
 
 }
