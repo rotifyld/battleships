@@ -1,6 +1,6 @@
 package battleships.models
 
-import battleships.utils.ShotResult
+import battleships.utils._
 
 case class ConsolePlayer(ships: List[Ship], receivedShots: Set[(Int, Int)]) extends Player {
 
@@ -14,6 +14,10 @@ case class ConsolePlayer(ships: List[Ship], receivedShots: Set[(Int, Int)]) exte
 
 object ConsolePlayer {
 
-  def withShips: ConsolePlayer = ConsolePlayer(List(), Set())
+
+  def withShips: ConsolePlayer = {
+    val ships = AIPlayer.withShips.ships
+    ConsolePlayer(ships, Set())
+  }
 
 }
