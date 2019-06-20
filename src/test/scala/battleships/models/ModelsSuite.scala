@@ -7,13 +7,14 @@ import battleships.utils._
 class ModelsSuite extends WordSpec with MustMatchers {
 
   val pack = ShipPack.allPossible
-  val l = Config.ships.head._1
+  val l1 = Config.ships.head._1
+  val l2 = Config.ships.tail.head._1
   val lMax = Config.ships.map(_._1).max
 
   val s1 = Ship.fromCoordinates((0, 0), Right, 2)
-  val s2 = Ship.fromCoordinates((0, 0), Right, l)
-  val s3 = Ship.fromCoordinates((0, 0), Down, l)
-  val s4 = Ship.fromCoordinates((0, 1), Right, l)
+  val s2 = Ship.fromCoordinates((0, 0), Right, l1)
+  val s3 = Ship.fromCoordinates((0, 0), Down, l1)
+  val s4 = Ship.fromCoordinates((0, 1), Right, l1)
   val sLong = Ship.fromCoordinates((lMax - 1, 0), Left, lMax)
 
   "Ship" can {
@@ -32,30 +33,39 @@ class ModelsSuite extends WordSpec with MustMatchers {
 
   "ShipPack" can {
     "create list of all possible ships" in {
-      assert(pack.allShips.contains(s2))
-      assert(pack.allShips.contains(s4))
-      assert(pack.allShips.contains(sLong))
+      assert(pack.ships.contains(s2))
+      assert(pack.ships.contains(s4))
+      assert(pack.ships.contains(sLong))
     }
 
     "exclude ships with overlapping influence zones" in {
-      val filteredPack = pack.filter(Ship.fromCoordinates((0, 0), Right, 1))
+      val filteredPack = pack.filter(Ship.fromCoordinates((0, 0), Right, l1))
       assert(pack !== filteredPack)
-      assert(!filteredPack.allShips.contains(s4))
+      assert(!filteredPack.ships.contains(s4))
     }
 
-    "exclude ships via hit" in {
-      val filteredPack = pack.filter((0, 0))
-      assert(pack !== filteredPack)
-      assert(filteredPack.allShips.contains(s1))
-      assert(filteredPack.allShips.contains(s2))
-      assert(filteredPack.allShips.contains(s3))
-      assert(!filteredPack.allShips.contains(s4))
-      val doublyFilteredPack = pack.filter((1, 0))
-      assert(doublyFilteredPack !== filteredPack)
-      assert(doublyFilteredPack.allShips.contains(s1))
-      assert(doublyFilteredPack.allShips.contains(s2))
-      assert(!doublyFilteredPack.allShips.contains(s3))
-      assert(!doublyFilteredPack.allShips.contains(s4))
+    "exclude ships via shot" should {
+      "missed" in {
+        val filteredPack = pack.filter((0, 0), ShotResult.Miss)
+        assert(!filteredPack.ships.contains(s2))
+        assert(!filteredPack.ships.contains(s3))
+        assert(filteredPack.ships.contains(s4))
+      }
+
+      "hit" in {
+        val filteredPack = pack.filter((1, 0), ShotResult.ShipHit)
+        assert(filteredPack.ships.contains(s2))
+        assert(!filteredPack.ships.contains(s3))
+        assert(!filteredPack.ships.contains(s4))
+      }
+
+      "destroy" in {
+        val filteredPack = pack.filter((Config.gridSize - 1, Config.gridSize - 1), ShotResult.ShipSunk(l2))
+        assert(filteredPack.ships.contains(s2))
+        assert(filteredPack.ships.contains(s3))
+        assert(filteredPack.ships.contains(s4))
+        assert(filteredPack.ships.forall(_.length != l2))
+      }
     }
   }
 

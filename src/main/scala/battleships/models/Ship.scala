@@ -6,7 +6,7 @@ import battleships.utils._
 /**
   * @param cells cell -> is alive (not sunk)
   */
-case class Ship(cells: Map[(Int, Int), Boolean], influenceRange: Rectangle) {
+case class Ship(length: Int, cells: Map[(Int, Int), Boolean], influenceRange: Rectangle) {
 
   val isSunk: Boolean = cells.forall(!_._2)
 
@@ -14,7 +14,10 @@ case class Ship(cells: Map[(Int, Int), Boolean], influenceRange: Rectangle) {
 
   def collides(other: Ship): Boolean = this.influenceRange.overlaps(other.influenceRange)
 
-  override def toString: String = influenceRange.toString
+  override def toString: String = {
+    val cellList = cells.keySet.toList.sorted
+    "Ship(" + cellList.head + " ~ " + cellList.last + " : " + cellList.map(cells(_)).map(if (_) 'O' else 'X').mkString +  ")"
+  }
 
 }
 
@@ -28,11 +31,11 @@ object Ship {
       throw new IndexOutOfBoundsException("start: " + start + " dir: " + dir + " length " + length)
 
     val shipCells = (0 until length) map (i => dir.translate(start, i) -> true)
-    Ship(shipCells.toMap, Rectangle.extended(start, end))
+    Ship(length, shipCells.toMap, Rectangle.extended(start, end))
   }
 
   def single(cell: (Int, Int)): Ship = {
-    Ship(Map(cell -> true), Rectangle.extended(cell, cell))
+    Ship(1, Map(cell -> true), Rectangle.extended(cell, cell))
   }
 
 }

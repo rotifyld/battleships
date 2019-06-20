@@ -1,5 +1,7 @@
 package battleships.utils
 
+import scala.util.Random
+
 object Config {
 
   val gridSize = 10
@@ -11,5 +13,9 @@ object Config {
     (3, "Submarine"),
     (2, "Destroyer")
   )
+
+  val seed: Long = Random.nextLong
+
+  Random.setSeed(seed)
 
 }

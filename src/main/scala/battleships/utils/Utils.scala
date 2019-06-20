@@ -1,5 +1,7 @@
 package battleships.utils
 
+import battleships.models.Ship
+
 object Utils {
 
   def inRange(cell: (Int, Int)): Boolean = {
@@ -12,9 +14,13 @@ object Utils {
       this.left < other.right && this.right > other.left &&
         this.up < other.down && this.down > other.up
     }
+
+    def overlaps(s: Ship): Boolean = this.overlaps(s.influenceRange)
   }
 
   object Rectangle {
+    def single(cell: (Int, Int)) = Rectangle(cell._1, cell._1, cell._2, cell._2)
+
     def extended(start: (Int, Int), end: (Int, Int)): Rectangle = {
       if (start._1 > end._1 || start._2 > end._2)
         extended(end, start)

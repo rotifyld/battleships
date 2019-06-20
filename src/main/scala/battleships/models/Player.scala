@@ -1,5 +1,7 @@
 package battleships.models
 
+import battleships.utils.ShotResult
+
 trait Player {
 
   val ships: List[Ship]
@@ -9,18 +11,18 @@ trait Player {
 
   def getNextShot: (Int, Int)
 
+  def result(cell: (Int, Int), shotResult: ShotResult): Player
+
   def updatePlayer(newShips: List[Ship], newReceivedShots: Set[(Int, Int)]): Player
 
-  def receiveShot(cell: (Int, Int)): (Player, Boolean) = {
-    if (receivedShots contains cell) (this, false)
-    else {
-      ships indexWhere (_.cells contains cell) match {
-        case -1 => (updatePlayer(ships, receivedShots + cell), false)
-        case i: Int => (updatePlayer(ships.updated(i, ships(i).hit(cell)), receivedShots + cell), true)
-      }
+  def receiveShot(cell: (Int, Int)): (Player, ShotResult) = {
+    ships indexWhere (_.cells contains cell) match {
+      case -1 => (updatePlayer(ships, receivedShots + cell), ShotResult.Miss)
+      case i: Int =>
+        val newShip = ships(i).hit(cell)
+        (updatePlayer(ships.updated(i, newShip), receivedShots + cell),
+          if (newShip.isSunk) ShotResult.ShipSunk(newShip.length) else ShotResult.ShipHit)
     }
   }
-
-  def result(cell: (Int, Int), wasHit: Boolean): Player
 
 }
