@@ -1,5 +1,6 @@
 package battleships
 
+import battleships.io.GridParser
 import battleships.models.{AIPlayer, ConsolePlayer, Player}
 
 import scala.annotation.tailrec
@@ -8,6 +9,10 @@ import scala.util.Random
 class Main extends App {
 
   @tailrec private def mainLoop(attacking: Player, attacked: Player): (Player, Player) = {
+    attacking match {
+      case _: ConsolePlayer => println(GridParser.stringify(attacking, visibleL = true, attacked, visibleR = false))
+      case _ => ()
+    }
     val hitCell = attacking.getNextShot
     val (newAttacked, shotResult) = attacked.receiveShot(hitCell)
     val newAttacking = attacking.result(hitCell, shotResult)
@@ -16,10 +21,11 @@ class Main extends App {
     else mainLoop(newAttacked, newAttacking)
   }
 
-  val (winner, loser) = Random.nextBoolean() match { // randomizing starting player
-    case true => mainLoop(AIPlayer.empty, ConsolePlayer.empty)
-    case false => mainLoop(ConsolePlayer.empty, AIPlayer.empty)
+  // randomizing starting player
+  val (winner, loser) = if (Random.nextBoolean()) {
+    mainLoop(AIPlayer.withShips, ConsolePlayer.withShips)
+  } else {
+    mainLoop(ConsolePlayer.withShips, AIPlayer.withShips)
   }
-  
 
 }

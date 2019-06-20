@@ -14,6 +14,6 @@ case class ConsolePlayer(ships: List[Ship], receivedShots: Set[(Int, Int)]) exte
 
 object ConsolePlayer {
 
-  def empty: ConsolePlayer = ConsolePlayer(List(), Set())
+  def withShips: ConsolePlayer = ConsolePlayer(List(), Set())
 
 }

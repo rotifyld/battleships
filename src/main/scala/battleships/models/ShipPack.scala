@@ -33,8 +33,12 @@ case class ShipPack(ships: Vector[Ship], sizes: Map[Int, Int]) {
     }
   }
 
+  def randomShip: Ship = {
+    ships(Random.nextInt(ships.size))
+  }
+
   def randomShot: (Int, Int) = {
-    val ship = ships(Random.nextInt(ships.size))
+    val ship = randomShip
     val cells = ship.cells.keySet
     Random.shuffle(cells).head
   }

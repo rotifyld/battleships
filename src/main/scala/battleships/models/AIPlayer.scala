@@ -1,6 +1,6 @@
 package battleships.models
 
-import battleships.utils.ShotResult
+import battleships.utils._
 
 /**
   *
@@ -38,7 +38,16 @@ case class AIPlayer(ships: List[Ship],
 
 object AIPlayer {
 
-  def empty: AIPlayer = AIPlayer(List(), Set(), ShipPack.allPossible, true, (0, 0))
+  def withShips: AIPlayer = {
+    val ships = Config.ships.foldRight((ShipPack.allPossible, List[Ship]())) {
+      case (_, (pack, list)) =>
+        val nextShip = pack.randomShip
+        (pack.filter(nextShip), list :+ nextShip)
+    }
+    assert(ships._1.ships.isEmpty)
+
+    AIPlayer(ships._2, Set(), ShipPack.allPossible, true, (0, 0))
+  }
 
 }
 
