@@ -24,5 +24,4 @@ trait Player {
           if (newShip.isSunk) ShotResult.ShipSunk(newShip.length) else ShotResult.ShipHit)
     }
   }
-
 }

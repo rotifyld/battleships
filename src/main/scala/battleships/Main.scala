@@ -29,8 +29,9 @@ object Main extends App {
   }
 
   (winner, loser) match {
-    case (winner: ConsolePlayer, loser: AIPlayer) => println(GridParser.stringify(winner, visibleL = true, loser, visibleR = true))
-    case (winner: AIPlayer, loser: ConsolePlayer) => println(GridParser.stringify(loser, visibleL = true, winner, visibleR = true))
+    case (left: ConsolePlayer, right: AIPlayer) => println(GridParser.stringify(left, visibleL = true, right, visibleR = true))
+    case (right: AIPlayer, left: ConsolePlayer) => println(GridParser.stringify(left, visibleL = true, right, visibleR = true))
+    case _ => ()
   }
 
 }

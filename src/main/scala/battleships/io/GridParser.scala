@@ -3,25 +3,23 @@ package battleships.io
 import battleships.models.Player
 import battleships.utils.Config
 
+import scala.collection.immutable.Seq
+
 object GridParser {
 
-  private val columnMarks = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".take(Config.gridSize).map(_.toString)
+  val columnMarks: Seq[String] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".take(Config.gridSize).map(_.toString)
 
   private def waterTile(visible: Boolean, hit: Boolean): String = {
     if (!visible && !hit) " "
     else Console.BLUE_B + (if (hit) "~" else " ") + Console.RESET
   }
 
-  private def shipTile(visible: Boolean, hit: Boolean): String = {
+  private def shipTile(visible: Boolean, hit: Boolean, sunk: Boolean): String = {
     if (!visible && !hit) " "
     else {
-      if (hit) Console.MAGENTA_B + "X" + Console.RESET
-      else Console.RED_B + "O" + Console.RESET
+      (if (sunk) Console.MAGENTA_B else Console.RED_B) + (if (hit) "X" else "O") + Console.RESET
     }
   }
-
-  private val waterHit = Console.BLUE_B + "~" + Console.RESET
-  private val ship = Console.BLUE_B + " " + Console.RESET
 
   def getGrid(player: Player, visible: Boolean): Seq[Seq[String]] = {
 
@@ -32,7 +30,7 @@ object GridParser {
       x <- 0 until Config.gridSize
     } yield {
       shipCells.get((x, y)) match {
-        case Some(alive) => shipTile(visible, !alive)
+        case Some(alive) => shipTile(visible, !alive, player.ships(player.ships.indexWhere(_.cells.contains((x, y)))).isSunk)
         case None => waterTile(visible, player.receivedShots.contains((x, y)))
       }
     }

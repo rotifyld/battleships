@@ -27,8 +27,8 @@ object Ship {
     require(length > 0)
     val end = dir.translate(start, length - 1)
 
-    if (!Utils.inRange(start) || !Utils.inRange(end))
-      throw new IndexOutOfBoundsException("start: " + start + " dir: " + dir + " length " + length)
+//    if (!Utils.inRange(start) || !Utils.inRange(end))
+//      throw new IndexOutOfBoundsException("start: " + start + " dir: " + dir + " length " + length)
 
     val shipCells = (0 until length) map (i => dir.translate(start, i) -> true)
     Ship(length, shipCells.toMap, Rectangle.extended(start, end))
