@@ -15,6 +15,9 @@ sealed abstract class Direction(val dx: Int, val dy: Int) {
 }
 
 case object Left extends Direction(-1, 0)
+
 case object Right extends Direction(1, 0)
+
 case object Up extends Direction(0, -1)
+
 case object Down extends Direction(0, 1)

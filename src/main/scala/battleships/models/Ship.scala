@@ -10,7 +10,10 @@ case class Ship(length: Int, cells: Map[(Int, Int), Boolean], influenceRange: Re
 
   val isSunk: Boolean = cells.forall(!_._2)
 
-  def hit(cell: (Int, Int)): Ship = this.copy(cells = cells.updated(cell, false))
+  def hit(cell: (Int, Int)): Ship = cells.get(cell) match {
+    case None => this
+    case Some(_) => this.copy(cells = cells.updated(cell, false))
+  }
 
   def collides(other: Ship): Boolean = this.influenceRange.overlaps(other.influenceRange)
 

@@ -27,7 +27,7 @@ case class AIPlayer(ships: List[Ship],
   }
 
   override def updatePlayer(newShips: List[Ship], newReceivedShots: Set[(Int, Int)]): Player =
-    new AIPlayer(newShips, newReceivedShots, possibleEnemyShips, lastHitFatal, lastHitCell)
+    AIPlayer(newShips, newReceivedShots, possibleEnemyShips, lastHitFatal, lastHitCell)
 
 }
 
