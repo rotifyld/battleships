@@ -66,7 +66,6 @@ object ShipPack {
 
   val allPossible: ShipPack = {
 
-    // todo czy to jakoś ładniej (yield po dwa elementy | do wektora)
     val allShips = (for {
       length <- Config.ships.map(_._1).distinct
       x <- 0 until Config.gridSize

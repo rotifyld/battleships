@@ -21,7 +21,7 @@ object ConsolePlayer {
   @tailrec def getShips(player: ConsolePlayer, possibleShips: ShipPack, lengthsLeft: List[Int]): ConsolePlayer = {
     if (lengthsLeft == Nil) return player
 
-    ConsoleIO.write(GridParser.stringify(player, true))
+    ConsoleIO.write(GridParser.stringify(player, visible = true))
     val ship = ConsoleIO.getShip(lengthsLeft.head, possibleShips)
     getShips(player.copy(ships = player.ships :+ ship), possibleShips.filter(ship), lengthsLeft.tail)
   }

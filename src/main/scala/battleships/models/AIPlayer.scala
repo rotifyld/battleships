@@ -2,21 +2,16 @@ package battleships.models
 
 import battleships.utils._
 
-/**
-  *
-  * @param possibleEnemyShips
-  * @param lastHitFatal
-  * @param lastHitCell
-  */
 case class AIPlayer(ships: List[Ship],
                     receivedShots: Set[(Int, Int)],
                     possibleEnemyShips: ShipPack,
                     lastHitFatal: Boolean,
                     lastHitCell: (Int, Int)) extends Player {
 
-  override def getNextShot: (Int, Int) = lastHitFatal match {
-    case true => possibleEnemyShips.randomShot
-    case false => possibleEnemyShips.randomShotContaining(lastHitCell)
+  override def getNextShot: (Int, Int) = if (lastHitFatal) {
+    possibleEnemyShips.randomShot
+  } else {
+    possibleEnemyShips.randomShotContaining(lastHitCell)
   }
 
   override def result(cell: (Int, Int), shotResult: ShotResult): Player = {
@@ -46,7 +41,7 @@ object AIPlayer {
     }
     assert(ships._1.ships.isEmpty)
 
-    AIPlayer(ships._2, Set(), ShipPack.allPossible, true, (0, 0))
+    AIPlayer(ships._2, Set(), ShipPack.allPossible, lastHitFatal = true, (0, 0))
   }
 
 }
