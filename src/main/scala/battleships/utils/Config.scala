@@ -15,7 +15,4 @@ object Config {
   )
 
   val seed: Long = Random.nextLong
-
-  Random.setSeed(seed)
-
 }

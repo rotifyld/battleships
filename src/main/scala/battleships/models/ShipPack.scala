@@ -1,6 +1,5 @@
 package battleships.models
 
-//import battleships.utils.Config.{gridSize, ships}
 import battleships.utils._
 
 import scala.util.Random
@@ -52,6 +51,7 @@ case class ShipPack(ships: Vector[Ship], sizes: Map[Int, Int]) {
     val packContaining = this.copy(ships.filter(_.cells.contains(cell)))
     val ship = packContaining.randomShip
     val cells = ship.cells.filter(_._2).keySet
+
     // pick nearest of the cells
     cells.map(c => (Utils.distance(c, cell), c)).minBy(_._1)._2
   }

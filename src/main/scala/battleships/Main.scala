@@ -2,13 +2,15 @@ package battleships
 
 import battleships.io.GridParser
 import battleships.models.{AIPlayer, ConsolePlayer, Player}
+import battleships.utils.Config
 
-import scala.annotation.tailrec
 import scala.util.Random
 
 object Main extends App {
 
-  @tailrec private def gameLoop(attacking: Player, attacked: Player): (Player, Player) = {
+  Random.setSeed(Config.seed)
+
+  private def gameLoop(attacking: Player, attacked: Player): (Player, Player) = {
     attacking match {
       case _: ConsolePlayer => println(GridParser.stringify(attacking, visibleL = true, attacked, visibleR = false))
       case _ => ()

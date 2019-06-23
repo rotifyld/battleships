@@ -23,14 +23,16 @@ object GridParser {
 
   def getGrid(player: Player, visible: Boolean): Seq[Seq[String]] = {
 
-    val shipCells = player.ships.foldRight(Map[(Int, Int), Boolean]())(_.cells ++ _)
+    val shipCells = player.ships.flatMap(_.cells).toMap
     for {
       y <- 0 until Config.gridSize
     } yield for {
       x <- 0 until Config.gridSize
     } yield {
       shipCells.get((x, y)) match {
-        case Some(alive) => shipTile(visible, !alive, player.ships(player.ships.indexWhere(_.cells.contains((x, y)))).isSunk)
+        case Some(isAlive) =>
+          val isSunk = player.ships.find(_.cells.contains((x, y))).get.isSunk
+          shipTile(visible, !isAlive, isSunk)
         case None => waterTile(visible, player.receivedShots.contains((x, y)))
       }
     }
