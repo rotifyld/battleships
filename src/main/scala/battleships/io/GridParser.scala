@@ -1,6 +1,6 @@
 package battleships.io
 
-import battleships.models.Player
+import battleships.models.{Player, Ship}
 import battleships.utils.Config
 
 import scala.collection.immutable.Seq
